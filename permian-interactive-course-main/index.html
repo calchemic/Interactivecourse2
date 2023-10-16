@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Interactive Video Player</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://vjs.zencdn.net/8.5.2/video-js.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="styles.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://unpkg.com/@videojs/themes@1/dist/city/index.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 w-screen h-screen overflow-hidden">
+    <div class="flex-grow h-full relative">
+      <video
+        id="my-video"
+        class="video-js vjs-theme-city w-full h-full object-cover"
+        controls
+        preload="auto"
+        data-setup="{}"
+      >
+        <source
+          src="./media/outline.mp4"
+          type="video/mp4"
+        />
+        <p class="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to
+          a web browser that
+          <a
+            href="https://videojs.com/html5-video-support/"
+            target="_blank"
+            >supports HTML5 video</a
+          >
+        </p>
+      </video>
+
+      <button
+        id="magic-button"
+        class="bg-transparent absolute cursor-pointer z-20"
+      ></button>
+
+      <div
+        id="provide-help"
+        class="absolute top-2 right-2 z-10"
+      >
+        <div
+          id="help-container"
+          class="h-full w-full overflow-hidden z-10"
+          data-pos="0"
+        >
+          <div class="w-full">
+            <div
+              class="rounded-md flex flex-col h-full"
+              x-data="chat"
+            >
+              <div class="bg-gray-100 rounded-md shrink-0">
+                <form
+                  class="w-full rounded-md"
+                  @submit.prevent="handleSearch"
+                >
+                  <p class="px-2 pt-2 pb-4">
+                    Feel free to share your concerns or any bugs
+                  </p>
+                  <div
+                    class="mx-2 mb-2 flex items-center rounded-md border border-gray-800"
+                  >
+                    <input
+                      id="message"
+                      type="text"
+                      autocomplete="off"
+                      class="p-2 text-left rounded-md outline-none flex-1 bg-transparent"
+                      x-model="newMessage"
+                      placeholder="Your message..."
+                    />
+                    <button
+                      class="submit-button px-2 py-1 rounded-md text-blue-600"
+                      :class="{'opacity-50' : waitingOnResponse}"
+                    >
+                      <svg
+                        class="h-5 w-5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 18 20"
+                      >
+                        <path
+                          d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="help-button"
+          class="text-white z-10 cursor-pointer overflow-hidden"
+        >
+          <button
+            class="w-10 h-10 bg-gray-500 flex items-center justify-center"
+            style="border-radius: 15%"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="video-title"
+        class="absolute top-2 left-4 z-10"
+      >
+        <!-- Video Overlay Title and Description -->
+        <div class="bg-gray-500 bg-opacity-50 blur-md p-2">
+          <h1 class="text-2xl font-bold text-white">
+            Eric Schmidt, Executive Chairman, Alphabet Inc.: Just Say "Yes"
+          </h1>
+          <div class="mt-2"></div>
+          <p class="text-sm text-gray-200">
+            Eric Schmidt, Executive Chairman of Alphabet Inc. on how to achieve
+            success: Surround yourself with interesting, ambitious people, and
+            always say “yes” to challenges.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="slider"
+        class="absolute left-0 z-10 pt-24 pb-14 gap-y-2 flex flex-col overflow-hidden"
+      >
+        <div class="flex-grow flex items-center overflow-y-hidden">
+          <!-- Thumbnails Index - Vertical Slider Overlay -->
+          <div
+            id="slides-container"
+            class="h-full w-full overflow-y-hidden z-10 flex-flex-col"
+            data-pos="0"
+          >
+            <div
+              id="slides-heading"
+              class="shrink-0 h-7 bg-gray-500 flex items-center justify-center"
+            >
+              <p class="text-white text-center text-sm">Your Slides</p>
+            </div>
+            <div
+              id="slides"
+              class="bg-black flex-grow bg-opacity-50 h-full overflow-y-auto custom-scrollbar"
+            >
+              <div class="slider__slides">
+                <!-- Thumbnails will be injected here by the JS -->
+              </div>
+            </div>
+          </div>
+          <div
+            id="slides-button"
+            class="text-white z-10 cursor-pointer overflow-hidden"
+          >
+            <button
+              class="w-10 h-10 bg-gray-500 flex items-center justify-center overflow-hidden"
+              style="border-radius: 15%"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-8 h-8"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="chats"
+        class="absolute right-0 z-10 flex items-center"
+      >
+        <!-- Thumbnails Index - Vertical Slider Overlay -->
+        <div
+          id="chats-container"
+          class="h-full w-full overflow-hidden z-10"
+          data-pos="0"
+        >
+          <div class="w-full">
+            <div
+              class="rounded-md flex flex-col h-full"
+              x-data="chat"
+            >
+              <div class="bg-gray-100 rounded-md shrink-0">
+                <form
+                  class="w-full rounded-md"
+                  @submit.prevent="handleSearch"
+                >
+                  <div
+                    id="chats-emojis"
+                    class="flex flex-col gap-y-2 items-center rounded-lg px-2 pt-2 pb-4"
+                  >
+                    <div class="text-lg flex justify-around w-full">
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        ✋
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        👍
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        👎
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        👏
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        😂
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        🎉
+                      </button>
+                    </div>
+                    <div class="text-lg flex justify-around w-full">
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        😍
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        😮
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        🤔
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        🙏
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        🔥
+                      </button>
+                      <button
+                        type="button"
+                        class="cursor-pointer"
+                      >
+                        👋
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mx-2 mb-2 flex items-center rounded-md border border-gray-800"
+                  >
+                    <input
+                      id="message"
+                      type="text"
+                      autocomplete="off"
+                      class="p-2 text-left rounded-md outline-none flex-1 bg-transparent"
+                      x-model="newMessage"
+                      placeholder="Your message..."
+                    />
+                    <button
+                      class="submit-button px-2 py-1 rounded-md text-blue-600"
+                      :class="{'opacity-50' : waitingOnResponse}"
+                    >
+                      <svg
+                        class="h-5 w-5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 18 20"
+                      >
+                        <path
+                          d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="chats-button"
+          class="text-white z-10 cursor-pointer overflow-hidden"
+        >
+          <button
+            class="w-10 h-10 bg-gray-500 flex items-center justify-center"
+            style="border-radius: 15%"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
+    <script
+      type="module"
+      src="scripts.js"
+    ></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

@@ -1,0 +1,328 @@
+/* styles.css */
+
+
+/* Modifications for vertical slider */
+.slider {
+  height: 648px; /* 3 slides of 216px each */
+  overflow-y: auto;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+/* Hide the default scrollbar width */
+.slider::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* The background of the scrollbar, use transparent or set to the background color of your container */
+.slider::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* This is the actual scrollbar (the draggable part), styled to look like dots */
+.slider::-webkit-scrollbar-thumb {
+  background: #888; /* Change this color to fit your design */
+  border-radius: 6px; /* Half of the width to make it a circle */
+  border: 12px solid transparent; /* The gap between the "dots" */
+  background-clip: content-box; /* Helps in adjusting the circle size within borders */
+}
+
+/* Changing the color on hover */
+.slider::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.slider__slides {
+  height: 100%; /* Adjusted to take full height of the slider */
+}
+.slider__slide {
+  height: 192px;
+  width: 100%; /* Adjusted to take full width of the slider */
+  margin-bottom: 2px;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; /* Ensure the image doesn't repeat */
+  transition: opacity 0.3s;
+  position: relative;
+}
+
+.slider__slide:hover {
+  opacity: 0.75;
+}
+.slider__slide-name {
+  position: absolute;
+  bottom: 10px; /* Position it near the bottom */
+  left: 0; /* Centering the title horizontally */
+  /* transform: translateX(-50%); */
+  color: white; /* Making the text color white for visibility */
+  font-size: 16px; /* Adjust based on your preference */
+  font-family: "SF Compact", sans-serif;
+  background-color: gray;
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+}
+
+input[type="search"] {
+  width: 200px;
+  color: white; /* Setting the text color to white */
+  background-color: #333; /* You can adjust this if needed, just to ensure the text contrasts well against the input field's background color */
+}
+input[type="search"]::placeholder {
+  color: #aaa; /* Placeholder color, lighter than the text color for a subtle hint */
+}
+
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  color: white;
+}
+
+/* Specific styling for the Font Awesome icon */
+.slider-arrow .fas {
+  color: white; /* Setting the icon color to white */
+  font-size: 24px;
+}
+
+.slider:hover .slider-arrow {
+  transform: translateX(
+    305px
+  ); /* Adjust this value based on the size of the arrow and the desired spacing */
+}
+
+/* ... (rest of your current CSS) */
+
+/* #chatbot-container {
+    background-color: #f7f7f7;
+    border-left: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.chat-header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.chat-messages {
+    max-height: calc(100% - 70px);
+    overflow-y: auto;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.user-message, .bot-message {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.user-message {
+    background-color: #e6e6e6;
+}
+
+.bot-message {
+    background-color: #a8dadc;
+}
+
+.chat-input-section {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chat-input {
+    flex-grow: 1;
+    padding: 10px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+}
+
+.chat-send {
+    padding: 10px 20px;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    cursor: pointer;
+} */
+
+.message {
+  position: relative;
+}
+
+.message:after {
+  content: "";
+  top: 0;
+  position: absolute;
+  border: 0.75em solid transparent;
+  border-top-color: blue;
+  display: block;
+}
+
+.message.assistant:after {
+  left: -0.45em;
+  border-top-color: inherit;
+}
+
+.message.user:after {
+  right: -0.45em;
+  border-top-color: inherit;
+}
+
+.type-indicator span {
+  display: inline-block;
+  padding: 0 0.075em;
+  animation: type-indicator 1s ease-in-out infinite;
+  transform: translateY(0);
+}
+
+.type-indicator span:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.type-indicator span:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+@keyframes type-indicator {
+  0% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+  50% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+}
+
+.blink {
+  animation: blink 1.25s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  69% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.group:has(#video-slides:hover) #video-active {
+  display: none;
+}
+
+.custom-scrollbar {
+  /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #fff;
+  /* For IE and Edge (not as customizable) */
+    /* For IE and Edge (not as customizable) */
+    /* Turn on custom styling */
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    scrollbar-3dlight-color: #fff;
+    scrollbar-arrow-color: #fff;
+    scrollbar-base-color: #fff;
+    scrollbar-darkshadow-color: #fff;
+    scrollbar-face-color: #ccc;
+    scrollbar-highlight-color: #fff;
+    scrollbar-shadow-color: #ccc;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cccccca5;
+  border-radius: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #ffedd575;
+}
+
+#slides-button, #chats-button, #help-button {
+  display: block;
+}
+
+#slider, #chats {
+  width: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#slides-container, #chats-container, #help-container {
+  display: none;
+}
+
+#slider:hover #slides-button, #chats:hover #chats-button, #provide-help:hover #help-button {
+  display: none;
+}
+
+/* #slider { */
+#slider:hover {
+  width: 20%;
+  top: 0;
+  bottom: 0;
+  transform: none;
+}
+
+#chats:hover {
+  width: 20%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#provide-help:hover {
+  width: 20%;
+  top: 8px;
+  right: 8px;
+}
+
+#slider:hover #slides-container, #chats:hover #chats-container, #slider:hover #slides-heading, #provide-help:hover #help-container {
+  display: block;
+}
+
+.submit-button svg {
+  transform: rotate(90deg);
+}
+
+body:has(.vjs-has-started .vjs-user-inactive) #slides,
+body:has(.vjs-has-started .vjs-user-inactive) #chats,
+body:has(.vjs-has-started .vjs-user-inactive) #help-button,
+body:has(.vjs-has-started .vjs-user-inactive) #video-title {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vjs-theme-city .vjs-remaining-time {
+  flex: unset !important;
+}
+
+.vjs-theme-city .vjs-fullscreen-control,
+.vjs-theme-city .vjs-picture-in-picture-control,
+.vjs-theme-city .vjs-volume-panel {
+  flex: unset !important;
+}
+
+.vjs-theme-city .vjs-remaining-time {
+  flex: unset !important;
+}
+
+#video-title {
+  display: none;
+}
+
+body:has(#slider:hover) #video-title {
+  display: block;
+}
